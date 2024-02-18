@@ -1,7 +1,10 @@
-my_nums = list(range(1, 101))
+my_nums = list(range(1, 50))
 
 for num in my_nums:
     if num % 7 != 0 and '7' not in str(num):
         print(num)
     else:
         print("boom boom boom in my room")
+
+
+print("aviel")

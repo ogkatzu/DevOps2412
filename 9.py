@@ -1,9 +1,3 @@
-# for i in range(5):
-#     print(f"hello {i}")
-#
-# for i in range(10):
-#     print(f"you are number {i}")
-#
 
 def my_printer(prefix, amount):
     for i in range(1, amount+1):
