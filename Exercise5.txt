@@ -1,0 +1,300 @@
+Logs:
+1+2:
+Started by user admin
+Running as SYSTEM
+Building remotely on saar-node-1 in workspace /home/skatz/workspace/exercise-1
+[exercise-1] $ /bin/sh -xe /tmp/jenkins12027895521432423102.sh
++ echo Saar
++ cat /home/skatz/my_name.txt
+Saar
+Finished: SUCCESS
+
+3.
+Started by user admin
+Running as SYSTEM
+Building remotely on saar-node-1 (test) in workspace /home/skatz/workspace/exercise-1
+[exercise-1] $ /bin/sh -xe /tmp/jenkins4950635766293382204.sh
++ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+none            3.8G  4.0K  3.8G   1% /mnt/wsl
+none            472G  122G  350G  26% /usr/lib/wsl/drivers
+/dev/sdc       1007G  4.0G  952G   1% /
+none            3.8G  104K  3.8G   1% /mnt/wslg
+none            3.8G     0  3.8G   0% /usr/lib/wsl/lib
+rootfs          3.8G  2.1M  3.8G   1% /init
+none            3.8G  1.2M  3.8G   1% /run
+none            3.8G     0  3.8G   0% /run/lock
+none            3.8G     0  3.8G   0% /run/shm
+tmpfs           4.0M     0  4.0M   0% /sys/fs/cgroup
+none            3.8G   76K  3.8G   1% /mnt/wslg/versions.txt
+none            3.8G   76K  3.8G   1% /mnt/wslg/doc
+drvfs           472G  122G  350G  26% /mnt/c
+drvfs           472G  140G  333G  30% /mnt/g
+snapfuse        128K  128K     0 100% /snap/bare/5
+snapfuse         75M   75M     0 100% /snap/core22/1033
+snapfuse         74M   74M     0 100% /snap/core22/864
+snapfuse         92M   92M     0 100% /snap/gtk-common-themes/1535
+snapfuse         41M   41M     0 100% /snap/snapd/20290
+snapfuse         41M   41M     0 100% /snap/snapd/20671
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1282
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1284
+/dev/sde       1007G  2.3G  954G   1% /mnt/wsl/docker-desktop-data/isocache
+none            3.8G  8.0K  3.8G   1% /mnt/wsl/docker-desktop/shared-sockets/host-services
+/dev/sdd       1007G   62M  956G   1% /mnt/wsl/docker-desktop/docker-desktop-user-distro
+/dev/loop0      460M  460M     0 100% /mnt/wsl/docker-desktop/cli-tools
+drvfs           472G  122G  350G  26% /Docker/host
+Finished: SUCCESS
+
+4.
+Started by user admin
+Running as SYSTEM
+Building remotely on saar-node-1 (test) in workspace /home/skatz/workspace/exercise-1
+[exercise-1] $ /bin/sh -xe /tmp/jenkins5803149708350884172.sh
++ mkdir test
+[exercise-1] $ /bin/sh -xe /tmp/jenkins9128849278788096131.sh
++ mv /home/skatz/my_name.txt /home/skatz/test
+Finished: SUCCESS
+
+5.
+cron : 0 8 * * *
+
+6. groove code:
+pipeline {
+    agent {
+            node {
+                label 'test'
+            }
+    }
+
+    stages {
+        stage('Check if File Exists') {
+            steps {
+                script {
+                    def fileName = 'my_names.txt'
+                    def fileExists = fileExists(fileName)
+
+                    if (fileExists) {
+                        echo "File $fileName already exists."
+                    } else {
+                        writeFile file: fileName, text: 'Saar'
+                        echo "File $fileName created with content 'Saar'."
+                    }
+                }
+            }
+        }
+        stage('reading text file') {
+            steps {
+                readFile '/home/skatz/workspace/exercise-2/my_names.txt'
+                sh 'cat /home/skatz/workspace/exercise-2/my_names.txt'
+            }
+        }
+        stage('Disk sapce check') {
+            steps{
+                sh 'df -h'   
+            }
+        }
+        stage ("move file") {
+            steps {
+                script {
+                    def fileName = '/home/skatz/workspace/exercise-2/test-1/my_names.txt'
+                    def fileExists = fileExists(fileName)
+                    
+                    if (fileExists) {
+                        echo "file already in test-1 dir"
+                    } else {
+                        sh 'mkdir test-1 '
+                        sh 'mv my_names.txt /home/skatz/workspace/exercise-2/test-1/'
+                    }
+                    
+                }
+            }
+        }
+    }
+}
+
+Output:
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on saar-node-1 in /home/skatz/workspace/exercise-2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Check if File Exists)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] fileExists
+[Pipeline] writeFile
+[Pipeline] echo
+File my_names.txt created with content 'Saar'.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (reading text file)
+[Pipeline] readFile
+[Pipeline] sh
++ cat /home/skatz/workspace/exercise-2/my_names.txt
+Saar
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Disk sapce check)
+[Pipeline] sh
++ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+none            3.8G  4.0K  3.8G   1% /mnt/wsl
+none            472G  122G  350G  26% /usr/lib/wsl/drivers
+/dev/sdc       1007G  4.0G  952G   1% /
+none            3.8G  192K  3.8G   1% /mnt/wslg
+none            3.8G     0  3.8G   0% /usr/lib/wsl/lib
+rootfs          3.8G  2.1M  3.8G   1% /init
+none            3.8G  1.3M  3.8G   1% /run
+none            3.8G     0  3.8G   0% /run/lock
+none            3.8G     0  3.8G   0% /run/shm
+tmpfs           4.0M     0  4.0M   0% /sys/fs/cgroup
+none            3.8G   76K  3.8G   1% /mnt/wslg/versions.txt
+none            3.8G   76K  3.8G   1% /mnt/wslg/doc
+drvfs           472G  122G  350G  26% /mnt/c
+drvfs           472G  140G  333G  30% /mnt/g
+snapfuse        128K  128K     0 100% /snap/bare/5
+snapfuse         75M   75M     0 100% /snap/core22/1033
+snapfuse         74M   74M     0 100% /snap/core22/864
+snapfuse         92M   92M     0 100% /snap/gtk-common-themes/1535
+snapfuse         41M   41M     0 100% /snap/snapd/20290
+snapfuse         41M   41M     0 100% /snap/snapd/20671
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1282
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1284
+/dev/sde       1007G  2.3G  954G   1% /mnt/wsl/docker-desktop-data/isocache
+none            3.8G  8.0K  3.8G   1% /mnt/wsl/docker-desktop/shared-sockets/host-services
+/dev/sdd       1007G   62M  956G   1% /mnt/wsl/docker-desktop/docker-desktop-user-distro
+/dev/loop0      460M  460M     0 100% /mnt/wsl/docker-desktop/cli-tools
+drvfs           472G  122G  350G  26% /Docker/host
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (move file)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] fileExists
+[Pipeline] echo
+file already in test-1 dir
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
+7.
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on win-test in C:\Users\skatz\workspace\selenium-automation
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (test)
+[Pipeline] dir
+Running in C:\Users\skatz\PycharmProjects\hilanet_automation
+[Pipeline] {
+[Pipeline] bat
+
+C:\Users\skatz\PycharmProjects\hilanet_automation>python main.py 
+8:48
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+
+
+Challange:
+Started by user admin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on saar-node-1 in /home/skatz/workspace/exercise-2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Check if File Exists)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] fileExists
+[Pipeline] echo
+File my_names.txt already exists.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (reading text file)
+[Pipeline] readFile
+[Pipeline] sh
++ cat /home/skatz/workspace/exercise-2/my_names.txt
+Saar
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Disk sapce check)
+[Pipeline] sh
++ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+none            3.8G  4.0K  3.8G   1% /mnt/wsl
+none            472G  128G  345G  28% /usr/lib/wsl/drivers
+/dev/sdc       1007G  4.0G  952G   1% /
+none            3.8G  192K  3.8G   1% /mnt/wslg
+none            3.8G     0  3.8G   0% /usr/lib/wsl/lib
+rootfs          3.8G  2.1M  3.8G   1% /init
+none            3.8G  1.3M  3.8G   1% /run
+none            3.8G     0  3.8G   0% /run/lock
+none            3.8G     0  3.8G   0% /run/shm
+tmpfs           4.0M     0  4.0M   0% /sys/fs/cgroup
+none            3.8G   76K  3.8G   1% /mnt/wslg/versions.txt
+none            3.8G   76K  3.8G   1% /mnt/wslg/doc
+drvfs           472G  128G  345G  28% /mnt/c
+drvfs           472G  145G  327G  31% /mnt/g
+snapfuse        128K  128K     0 100% /snap/bare/5
+snapfuse         75M   75M     0 100% /snap/core22/1033
+snapfuse         74M   74M     0 100% /snap/core22/864
+snapfuse         92M   92M     0 100% /snap/gtk-common-themes/1535
+snapfuse         41M   41M     0 100% /snap/snapd/20290
+snapfuse         41M   41M     0 100% /snap/snapd/20671
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1282
+snapfuse        131M  131M     0 100% /snap/ubuntu-desktop-installer/1284
+/dev/sde       1007G  2.3G  954G   1% /mnt/wsl/docker-desktop-data/isocache
+none            3.8G  8.0K  3.8G   1% /mnt/wsl/docker-desktop/shared-sockets/host-services
+/dev/sdd       1007G   62M  956G   1% /mnt/wsl/docker-desktop/docker-desktop-user-distro
+/dev/loop0      460M  460M     0 100% /mnt/wsl/docker-desktop/cli-tools
+drvfs           472G  128G  345G  28% /Docker/host
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (move file)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] fileExists
+[Pipeline] echo
+file already in test-1 dir
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Build was successful, triggerting next pipeline
+[Pipeline] build (Building selenium-automation)
+Scheduling project: selenium-automation
+Starting building: selenium-automation #5
+Build selenium-automation #5 completed: SUCCESS
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Triggering a new build of selenium-automation #6
+Finished: SUCCESS
